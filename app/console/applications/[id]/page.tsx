@@ -8,7 +8,7 @@ import {
   Trash2,
   AlertTriangle,
   Download,
-  RefreshCw,
+
   Tag,
   Radio,
   Battery,
@@ -425,35 +425,14 @@ function OAuthDangerTab({ app }: { app: OAuthApp }) {
 function SDKOverviewTab({ app }: { app: SDKApp }) {
   const { addToast } = useStore();
   const [showRegenConfirm, setShowRegenConfirm] = useState(false);
-  const [showPublish, setShowPublish] = useState(false);
-  const [publishChecks, setPublishChecks] = useState({ tested: false, bundleId: false, useCase: false });
 
   const handleRegen = () => {
     setShowRegenConfirm(false);
     addToast({ message: 'Secret key regenerated.', type: 'success' });
   };
 
-  const allChecked = Object.values(publishChecks).every(Boolean);
-
   return (
     <div className="space-y-6">
-      {app.mode === 'sandbox' && (
-        <div className="flex items-start justify-between p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl">
-          <div className="flex items-start gap-3">
-            <AlertTriangle size={16} className="text-amber-600 mt-0.5 flex-shrink-0" />
-            <div>
-              <div className="text-sm font-semibold text-amber-800 mb-0.5">Sandbox Mode</div>
-              <div className="text-xs text-amber-400">Limited to 5 devices, fixture ASR responses, no billing charges.</div>
-            </div>
-          </div>
-          <button
-            onClick={() => setShowPublish(true)}
-            className="flex-shrink-0 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold rounded-lg transition-colors"
-          >
-            Publish to Production
-          </button>
-        </div>
-      )}
 
       <div>
         <SectionTitle>Client Credentials</SectionTitle>
@@ -504,38 +483,6 @@ function SDKOverviewTab({ app }: { app: SDKApp }) {
         </div>
       </Modal>
 
-      <Modal isOpen={showPublish} onClose={() => setShowPublish(false)} title="Publish to Production" size="lg">
-        <div className="space-y-4">
-          <p className="text-sm text-slate-400">Complete the checklist before publishing to Production.</p>
-          <div className="space-y-3">
-            {[
-              { key: 'tested', label: 'I have tested my app in Sandbox with real devices' },
-              { key: 'bundleId', label: 'My Bundle ID matches the published app store listing' },
-              { key: 'useCase', label: 'My use case description accurately reflects the app\'s functionality' },
-            ].map(item => (
-              <label key={item.key} className="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={publishChecks[item.key as keyof typeof publishChecks]}
-                  onChange={e => setPublishChecks(p => ({ ...p, [item.key]: e.target.checked }))}
-                  className="mt-0.5 w-4 h-4 text-indigo-600 rounded border-slate-300"
-                />
-                <span className="text-sm text-slate-300">{item.label}</span>
-              </label>
-            ))}
-          </div>
-          <div className="flex justify-end gap-3">
-            <button onClick={() => setShowPublish(false)} className="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">Cancel</button>
-            <button
-              disabled={!allChecked}
-              onClick={() => { setShowPublish(false); addToast({ message: 'App published to Production!', type: 'success' }); }}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-sm font-medium transition-colors"
-            >
-              Publish to Production
-            </button>
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 }
@@ -545,24 +492,23 @@ function SDKSettingsTab({ app }: { app: SDKApp }) {
   const [platform, setPlatform] = useState(app.platform);
   const [bundleId, setBundleId] = useState(app.bundleId);
   const [useCase, setUseCase] = useState(app.useCase);
-  const [mode, setMode] = useState(app.mode);
 
   const handleSave = () => {
-    updateApplication(app.id, { platform, bundleId, useCase, mode } as Partial<SDKApp>);
+    updateApplication(app.id, { platform, bundleId, useCase } as Partial<SDKApp>);
     addToast({ message: 'Settings saved', type: 'success' });
   };
 
   return (
     <div className="space-y-5 max-w-lg">
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-2">Platform</label>
+        <label className="block text-sm font-medium text-slate-300 mb-2">Platform</label>
         <div className="flex gap-3">
           {(['ios', 'android', 'both'] as const).map(p => (
             <button
               key={p}
               onClick={() => setPlatform(p)}
               className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
-                platform === p ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300'
+                platform === p ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white/5 text-slate-300 border-white/10 hover:border-indigo-500/40'
               }`}
             >
               {p === 'ios' ? 'iOS' : p === 'android' ? 'Android' : 'Both'}
@@ -571,28 +517,12 @@ function SDKSettingsTab({ app }: { app: SDKApp }) {
         </div>
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">Bundle ID</label>
-        <input value={bundleId} onChange={e => setBundleId(e.target.value)} className="w-full px-3 py-2.5 border border-white/10 rounded-xl text-sm font-mono focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
+        <label className="block text-sm font-medium text-slate-300 mb-1">Bundle ID</label>
+        <input value={bundleId} onChange={e => setBundleId(e.target.value)} className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm font-mono text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30" />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">Use Case</label>
-        <textarea value={useCase} onChange={e => setUseCase(e.target.value)} rows={4} className="w-full px-3 py-2.5 border border-white/10 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 resize-none" />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-slate-700 mb-2">Mode</label>
-        <div className="flex gap-3">
-          {(['sandbox', 'production'] as const).map(m => (
-            <button
-              key={m}
-              onClick={() => setMode(m)}
-              className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-colors capitalize ${
-                mode === m ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300'
-              }`}
-            >
-              {m}
-            </button>
-          ))}
-        </div>
+        <label className="block text-sm font-medium text-slate-300 mb-1">Use Case</label>
+        <textarea value={useCase} onChange={e => setUseCase(e.target.value)} rows={4} className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 resize-none" />
       </div>
       <button onClick={handleSave} className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm transition-colors">
         Save Changes
@@ -615,7 +545,7 @@ function SDKDownloadTab({ app }: { app: SDKApp }) {
 // Initialize with your Client ID
 PlaudSDK.initialize(
   clientId: "${app.clientId}",
-  mode: .${app.mode}
+  // clientId is used to authenticate with the Plaud SDK
 )
 
 // Connect to a device
@@ -839,39 +769,89 @@ function SDKDevicesTab({ app }: { app: SDKApp }) {
   );
 }
 
-function SDKBillingTab() {
+const FREE_DEVICES = 1;
+const FREE_ASR_MINUTES = 3000; // 50 hours
+const PRICE_PER_DEVICE = 5;
+
+function SDKBillingTab({ app }: { app: SDKApp }) {
+  const asrPct = Math.min((app.asrMinutesUsed / FREE_ASR_MINUTES) * 100, 100);
+  const asrOverageMinutes = Math.max(app.asrMinutesUsed - FREE_ASR_MINUTES, 0);
+  const billableDevices = Math.max(app.activeDevices - FREE_DEVICES, 0);
+  const deviceCharges = billableDevices * PRICE_PER_DEVICE;
+  const asrCharges = parseFloat((asrOverageMinutes * 0.006).toFixed(2)); // $0.006/min overage
+  const estimatedTotal = deviceCharges + asrCharges;
+
   return (
     <div className="space-y-6">
+
+      {/* Free tier summary */}
       <div>
-        <div className="flex items-center justify-between mb-3">
-          <div>
-            <SectionTitle>Current Plan</SectionTitle>
+        <SectionTitle>Free Tier</SectionTitle>
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+            <div className="text-xs text-slate-500 mb-1">Devices</div>
+            <div className="text-lg font-bold text-white">{app.activeDevices} <span className="text-sm font-normal text-slate-400">connected</span></div>
+            <div className="text-xs text-slate-500 mt-1">
+              {app.activeDevices <= FREE_DEVICES
+                ? <span className="text-emerald-400">✓ Within free tier (1 free)</span>
+                : <span className="text-amber-400">{billableDevices} billed · ${deviceCharges}/mo</span>
+              }
+            </div>
           </div>
-          <span className="px-3 py-1 bg-indigo-100 text-indigo-700 text-sm font-semibold rounded-full">Starter Plan</span>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+            <div className="text-xs text-slate-500 mb-1">ASR Usage</div>
+            <div className="text-lg font-bold text-white">{Math.floor(app.asrMinutesUsed / 60)}h {app.asrMinutesUsed % 60}m</div>
+            <div className="text-xs text-slate-500 mt-1">
+              {asrOverageMinutes === 0
+                ? <span className="text-emerald-400">✓ Within free tier (50h/mo)</span>
+                : <span className="text-amber-400">{Math.floor(asrOverageMinutes / 60)}h {asrOverageMinutes % 60}m over · ${asrCharges}</span>
+              }
+            </div>
+          </div>
         </div>
-        <div className="bg-white/5 rounded-xl p-4">
+
+        {/* ASR progress bar */}
+        <div className="bg-white/5 border border-white/10 rounded-xl p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-slate-400">API Minutes Used</span>
-            <span className="text-sm font-medium text-white">847 / 2,000 min</span>
+            <span className="text-sm text-slate-400">ASR this billing cycle</span>
+            <span className="text-sm font-medium text-white">{app.asrMinutesUsed} / {FREE_ASR_MINUTES} min free</span>
           </div>
-          <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-            <div className="h-full bg-indigo-500 rounded-full" style={{ width: '42%' }} />
+          <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all ${asrPct >= 100 ? 'bg-amber-500' : 'bg-indigo-500'}`}
+              style={{ width: `${asrPct}%` }}
+            />
           </div>
-          <div className="text-xs text-slate-400 mt-1">42% used this billing cycle</div>
-        </div>
-        <div className="flex gap-3 mt-4">
-          <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl text-sm transition-colors">
-            Upgrade Plan
-          </button>
-          <button className="px-4 py-2 border border-slate-200 text-slate-600 font-medium rounded-xl text-sm hover:bg-white/5 transition-colors">
-            Downgrade
-          </button>
+          <div className="text-xs text-slate-500 mt-1">{asrPct.toFixed(0)}% of free tier used</div>
         </div>
       </div>
 
+      {/* Estimated charges */}
+      <div>
+        <SectionTitle>Estimated Charges This Cycle</SectionTitle>
+        <div className="bg-white/5 border border-white/10 rounded-xl divide-y divide-white/5">
+          <div className="flex items-center justify-between px-4 py-3">
+            <span className="text-sm text-slate-400">Additional devices ({billableDevices} × $5)</span>
+            <span className="text-sm font-medium text-white">${deviceCharges.toFixed(2)}</span>
+          </div>
+          <div className="flex items-center justify-between px-4 py-3">
+            <span className="text-sm text-slate-400">ASR overage ({asrOverageMinutes} min × $0.006)</span>
+            <span className="text-sm font-medium text-white">${asrCharges.toFixed(2)}</span>
+          </div>
+          <div className="flex items-center justify-between px-4 py-3 bg-white/5 rounded-b-xl">
+            <span className="text-sm font-semibold text-white">Total</span>
+            <span className="text-sm font-bold text-white">${estimatedTotal.toFixed(2)}</span>
+          </div>
+        </div>
+        {estimatedTotal === 0 && (
+          <p className="text-xs text-emerald-400 mt-2">You&apos;re within the free tier — no charges this cycle.</p>
+        )}
+      </div>
+
+      {/* Payment method */}
       <div>
         <SectionTitle>Payment Method</SectionTitle>
-        <div className="flex items-center justify-between p-4 bg-slate-50 border border-white/10 rounded-xl">
+        <div className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl">
           <div className="flex items-center gap-3">
             <CreditCard size={18} className="text-slate-500" />
             <div>
@@ -879,10 +859,11 @@ function SDKBillingTab() {
               <div className="text-xs text-slate-500">Expires 12/2027</div>
             </div>
           </div>
-          <button className="text-sm text-indigo-600 hover:text-indigo-800 font-medium transition-colors">Update</button>
+          <button className="text-sm text-indigo-400 hover:text-indigo-300 font-medium transition-colors">Update</button>
         </div>
       </div>
 
+      {/* Invoices */}
       <div>
         <SectionTitle>Invoices</SectionTitle>
         <div className="overflow-x-auto">
@@ -902,13 +883,13 @@ function SDKBillingTab() {
                   <td className="py-3 text-sm font-medium text-white">${inv.amount.toFixed(2)}</td>
                   <td className="py-3">
                     <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                      inv.status === 'paid' ? 'bg-emerald-500/100/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
+                      inv.status === 'paid' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
                     }`}>
                       {inv.status === 'paid' ? 'Paid' : 'Pending'}
                     </span>
                   </td>
                   <td className="py-3 text-right">
-                    <button className="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1 ml-auto transition-colors">
+                    <button className="text-xs text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-1 ml-auto transition-colors">
                       <Download size={11} /> PDF
                     </button>
                   </td>
@@ -1071,7 +1052,7 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
               {activeTab === 'download' && <SDKDownloadTab app={app as SDKApp} />}
               {activeTab === 'devices' && <SDKDevicesTab app={app as SDKApp} />}
               {activeTab === 'logs' && <LogsTable />}
-              {activeTab === 'billing' && <SDKBillingTab />}
+              {activeTab === 'billing' && <SDKBillingTab app={app} />}
               {activeTab === 'danger' && <SDKDangerTab app={app as SDKApp} />}
             </>
           )}

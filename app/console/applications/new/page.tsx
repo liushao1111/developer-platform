@@ -32,7 +32,7 @@ function generateClientId() {
 }
 function generateSecret() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = 'sk_live_';
+  let result = 'plaud_sk_';
   for (let i = 0; i < 32; i++) result += chars[Math.floor(Math.random() * chars.length)];
   return result;
 }
@@ -100,7 +100,7 @@ function NewApplicationContent() {
         type: 'oauth',
         name: oauthName,
         description: oauthDesc,
-        status: 'sandbox',
+        status: 'active',
         clientId,
         clientSecret,
         homepageUrl: oauthHomepage,
@@ -124,13 +124,12 @@ function NewApplicationContent() {
         type: 'sdk',
         name: sdkName,
         description: sdkDesc,
-        status: 'sandbox',
+        status: 'active',
         clientId,
         clientSecret,
         platform,
         bundleId,
         useCase,
-        mode: 'sandbox',
         createdAt: new Date().toISOString(),
         lastActive: new Date().toISOString(),
         activeDevices: 0,
@@ -139,6 +138,7 @@ function NewApplicationContent() {
         apiCallsToday: 0,
         apiCallsTotal: 0,
         errorRate: 0,
+        asrMinutesUsed: 0,
       };
       addApplication(newApp);
     }
@@ -228,6 +228,11 @@ function NewApplicationContent() {
                     <p className="text-sm text-slate-400 leading-relaxed">
                       Build native iOS or Android apps that connect directly to Plaud NotePin hardware. Control recording, manage devices, and build custom workflows.
                     </p>
+                    <div className="mt-3 flex items-center gap-3 text-xs text-slate-500">
+                      <span className="flex items-center gap-1"><span className="text-emerald-400">✓</span> 1 device free</span>
+                      <span className="flex items-center gap-1"><span className="text-emerald-400">✓</span> 50 hrs ASR/month free</span>
+                      <span className="flex items-center gap-1"><span className="text-slate-600">·</span> $5 / additional device</span>
+                    </div>
                   </div>
                 </div>
               </div>

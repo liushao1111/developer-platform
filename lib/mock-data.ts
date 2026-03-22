@@ -1,5 +1,5 @@
 export type AppType = 'oauth' | 'sdk';
-export type AppStatus = 'active' | 'sandbox' | 'in_review' | 'suspended';
+export type AppStatus = 'active' | 'in_review' | 'suspended';
 export type DeviceStatus = 'active' | 'low_battery' | 'offline';
 
 export interface OAuthApp {
@@ -36,7 +36,6 @@ export interface SDKApp {
   platform: 'ios' | 'android' | 'both';
   bundleId: string;
   useCase: string;
-  mode: 'sandbox' | 'production';
   createdAt: string;
   lastActive: string;
   activeDevices: number;
@@ -45,6 +44,7 @@ export interface SDKApp {
   apiCallsToday: number;
   apiCallsTotal: number;
   errorRate: number;
+  asrMinutesUsed: number;
 }
 
 export type Application = OAuthApp | SDKApp;
@@ -117,13 +117,12 @@ export const mockApplications: Application[] = [
     type: 'sdk',
     name: 'RecorderApp iOS',
     description: 'Native iOS application for professional audio recording with AI transcription.',
-    status: 'sandbox',
+    status: 'active',
     clientId: 'plaud_client_rec01_xyz789ghi012',
     clientSecret: 'mock_secret_rec01_xxxxxxxxxxxxxxxxxxxx',
     platform: 'ios',
     bundleId: 'com.acme.recorderapp',
     useCase: 'Professional audio recording for field journalists and researchers requiring high-quality transcription.',
-    mode: 'sandbox',
     createdAt: '2025-02-20T14:00:00Z',
     lastActive: '2026-03-10T16:22:00Z',
     activeDevices: 23,
@@ -132,6 +131,7 @@ export const mockApplications: Application[] = [
     apiCallsToday: 891,
     apiCallsTotal: 12450,
     errorRate: 0.5,
+    asrMinutesUsed: 2340,
   },
   {
     id: 'app_reca01',
@@ -144,7 +144,6 @@ export const mockApplications: Application[] = [
     platform: 'android',
     bundleId: 'com.acme.recorderapp.android',
     useCase: 'Android companion for Plaud NotePin with offline recording support.',
-    mode: 'sandbox',
     createdAt: '2025-03-05T09:15:00Z',
     lastActive: '2026-03-09T11:00:00Z',
     activeDevices: 0,
@@ -153,6 +152,7 @@ export const mockApplications: Application[] = [
     apiCallsToday: 0,
     apiCallsTotal: 0,
     errorRate: 0,
+    asrMinutesUsed: 0,
   },
 ];
 
