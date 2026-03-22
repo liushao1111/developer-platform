@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { AppStatus } from '@/lib/mock-data';
 
 interface StatusBadgeProps {
@@ -9,7 +8,6 @@ interface StatusBadgeProps {
 
 const statusConfig: Record<AppStatus, { label: string; className: string }> = {
   active: { label: 'Active', className: 'bg-emerald-100 text-emerald-700' },
-  sandbox: { label: 'Sandbox', className: 'bg-slate-100 text-slate-600' },
   in_review: { label: 'In Review', className: 'bg-amber-100 text-amber-700' },
   suspended: { label: 'Suspended', className: 'bg-red-100 text-red-700' },
 };

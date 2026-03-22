@@ -19,7 +19,7 @@ export default function DashboardPage() {
   const router = useRouter();
 
   const oauthApp = applications.find(a => a.type === 'oauth');
-  const sdkApp = applications.find(a => a.type === 'sdk' && a.status === 'sandbox');
+  const sdkApp = applications.find(a => a.type === 'sdk');
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
