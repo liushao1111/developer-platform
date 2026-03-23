@@ -21,6 +21,7 @@ import { useStore } from '@/lib/store';
 import { OAuthApp, SDKApp, mockDevices, mockLogs, mockAuthorizedUsers, mockInvoices } from '@/lib/mock-data';
 import { StatusBadge } from '@/components/console/StatusBadge';
 import { CredentialField } from '@/components/console/CredentialField';
+import { TemplateScreenPicker } from '@/components/console/TemplateScreenPicker';
 import { Modal } from '@/components/ui/Modal';
 import { Tabs } from '@/components/ui/Tabs';
 
@@ -555,6 +556,12 @@ PlaudSDK.connect(serial: "PLN-2024-001A") { device in
 
   return (
     <div className="space-y-6">
+      <TemplateScreenPicker clientId={app.clientId} platform={app.platform} />
+
+      <div className="border-t border-white/10 pt-6">
+      <SectionTitle>Installation</SectionTitle>
+      </div>
+
       {(app.platform === 'ios' || app.platform === 'both') && (
         <div>
           <SectionTitle>Install via Swift Package Manager</SectionTitle>

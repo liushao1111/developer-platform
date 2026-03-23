@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { OAuthApp, SDKApp } from '@/lib/mock-data';
+import { TemplateScreenPicker } from '@/components/console/TemplateScreenPicker';
 
 type AppType = 'oauth' | 'sdk' | null;
 
@@ -70,6 +71,7 @@ function NewApplicationContent() {
   const [checkedSecret, setCheckedSecret] = useState(false);
 
   const [createdAppId, setCreatedAppId] = useState<string>('');
+
 
   useEffect(() => {
     const typeParam = searchParams.get('type');
@@ -168,25 +170,35 @@ function NewApplicationContent() {
 
       <div className="px-8 py-6 max-w-2xl mx-auto">
         {/* Progress Indicator */}
-        <div className="flex items-center gap-2 mb-8">
-          {[1, 2, 3].map((s, i) => (
-            <React.Fragment key={s}>
-              <div className="flex items-center gap-2">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
-                  step > s ? 'bg-emerald-500 text-white' :
-                  step === s ? 'bg-indigo-600 text-white' :
-                  'bg-white/10 text-slate-500'
-                }`}>
-                  {step > s ? <Check size={14} /> : s}
-                </div>
-                <span className={`text-sm font-medium ${step === s ? 'text-white' : 'text-slate-500'}`}>
-                  {s === 1 ? 'Choose Type' : s === 2 ? 'App Details' : 'Credentials'}
-                </span>
-              </div>
-              {i < 2 && <div className={`flex-1 h-px ${step > s ? 'bg-emerald-500/50' : 'bg-white/10'}`} />}
-            </React.Fragment>
-          ))}
-        </div>
+        {(() => {
+          const steps = appType === 'sdk'
+            ? ['Choose Type', 'App Details', 'Credentials', 'Get Started']
+            : ['Choose Type', 'App Details', 'Credentials'];
+          return (
+            <div className="flex items-center gap-2 mb-8">
+              {steps.map((label, i) => {
+                const s = i + 1;
+                return (
+                  <React.Fragment key={s}>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
+                        step > s ? 'bg-emerald-500 text-white' :
+                        step === s ? 'bg-indigo-600 text-white' :
+                        'bg-white/10 text-slate-500'
+                      }`}>
+                        {step > s ? <Check size={14} /> : s}
+                      </div>
+                      <span className={`text-sm font-medium ${step === s ? 'text-white' : 'text-slate-500'}`}>
+                        {label}
+                      </span>
+                    </div>
+                    {i < steps.length - 1 && <div className={`flex-1 h-px ${step > s ? 'bg-emerald-500/50' : 'bg-white/10'}`} />}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          );
+        })()}
 
         {/* Step 1: Choose Type */}
         {step === 1 && (
@@ -399,6 +411,27 @@ function NewApplicationContent() {
           </div>
         )}
 
+        {/* Step 4: Template Picker (SDK only) */}
+        {step === 4 && appType === 'sdk' && (
+          <div>
+            <TemplateScreenPicker clientId={clientId} platform={platform} />
+            <div className="flex items-center justify-between mt-8">
+              <button
+                onClick={() => router.push(`/console/applications/${createdAppId}`)}
+                className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
+              >
+                Skip for now
+              </button>
+              <button
+                onClick={() => router.push(`/console/applications/${createdAppId}`)}
+                className="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors"
+              >
+                Go to App <ChevronRight size={15} />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Step 3: Credentials */}
         {step === 3 && (
           <div>
@@ -479,11 +512,11 @@ function NewApplicationContent() {
             </div>
 
             <button
-              onClick={() => router.push(`/console/applications/${createdAppId}`)}
+              onClick={() => appType === 'sdk' ? setStep(4) : router.push(`/console/applications/${createdAppId}`)}
               disabled={!checkedId || !checkedSecret}
               className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors"
             >
-              Go to App
+              {appType === 'sdk' ? <span className="flex items-center justify-center gap-2">Continue <ChevronRight size={15} /></span> : 'Go to App'}
             </button>
           </div>
         )}
