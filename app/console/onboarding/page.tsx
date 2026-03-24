@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Mic, Users, Smartphone, ArrowRight } from 'lucide-react';
+import { Mic, Users, Smartphone, ArrowRight, MessageSquare, ArrowUpRight } from 'lucide-react';
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -87,6 +87,25 @@ export default function OnboardingPage() {
               Select Embedded SDK <ArrowRight size={15} />
             </div>
           </div>
+        </div>
+
+        {/* Discord community callout */}
+        <div className="flex items-center gap-4 p-4 bg-indigo-50 border border-indigo-100 rounded-2xl mb-6">
+          <div className="w-10 h-10 rounded-xl bg-white border border-indigo-200 flex items-center justify-center flex-shrink-0">
+            <MessageSquare size={18} className="text-[#5865F2]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold text-slate-900">Join the developer community</div>
+            <div className="text-xs text-slate-500 mt-0.5">4,800+ developers on Discord · Get help building, share what you make</div>
+          </div>
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] text-white text-xs font-semibold rounded-xl transition-colors flex-shrink-0"
+          >
+            Join Discord <ArrowUpRight size={12} />
+          </a>
         </div>
 
         <div className="text-center">

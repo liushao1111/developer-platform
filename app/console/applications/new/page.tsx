@@ -58,8 +58,6 @@ function NewApplicationContent() {
   // SDK fields
   const [sdkName, setSdkName] = useState('');
   const [sdkDesc, setSdkDesc] = useState('');
-  const [platform, setPlatform] = useState<'ios' | 'android' | 'both'>('ios');
-  const [bundleId, setBundleId] = useState('');
   const [useCase, setUseCase] = useState('');
 
   // Generated credentials
@@ -129,8 +127,8 @@ function NewApplicationContent() {
         status: 'active',
         clientId,
         clientSecret,
-        platform,
-        bundleId,
+        platform: 'ios' as const,
+        bundleId: '',
         useCase,
         createdAt: new Date().toISOString(),
         lastActive: new Date().toISOString(),
@@ -365,28 +363,6 @@ function NewApplicationContent() {
                   <textarea value={sdkDesc} onChange={e => setSdkDesc(e.target.value)} placeholder="What does your app do?" rows={3} className={`${inputClass} resize-none`} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Platform</label>
-                  <div className="flex gap-3">
-                    {(['ios', 'android', 'both'] as const).map(p => (
-                      <button
-                        key={p}
-                        onClick={() => setPlatform(p)}
-                        className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
-                          platform === p
-                            ? 'bg-indigo-600 text-white border-indigo-600'
-                            : 'bg-white/5 text-slate-300 border-white/10 hover:border-indigo-500/40'
-                        }`}
-                      >
-                        {p === 'ios' ? 'iOS' : p === 'android' ? 'Android' : 'Both'}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">Bundle ID</label>
-                  <input value={bundleId} onChange={e => setBundleId(e.target.value)} placeholder="com.yourcompany.yourapp" className={`${inputClass} font-mono`} />
-                </div>
-                <div>
                   <label className="block text-sm font-medium text-slate-300 mb-1">Use Case</label>
                   <textarea value={useCase} onChange={e => setUseCase(e.target.value)} placeholder="Describe what your app does and how it will use the Plaud SDK..." rows={4} className={`${inputClass} resize-none`} />
                 </div>
@@ -414,7 +390,7 @@ function NewApplicationContent() {
         {/* Step 4: Template Picker (SDK only) */}
         {step === 4 && appType === 'sdk' && (
           <div>
-            <TemplateScreenPicker clientId={clientId} platform={platform} />
+            <TemplateScreenPicker clientId={clientId} />
             <div className="flex items-center justify-between mt-8">
               <button
                 onClick={() => router.push(`/console/applications/${createdAppId}`)}

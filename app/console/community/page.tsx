@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import {
   Github,
   MessageSquare,
@@ -159,9 +158,39 @@ export default function CommunityPage() {
 
       <div className="flex-1 px-8 py-6 space-y-8 overflow-y-auto">
 
-        {/* ── Connect row ── */}
+        {/* ── Discord hero ── */}
+        <div className="relative overflow-hidden bg-[#5865F2]/10 border border-[#5865F2]/25 rounded-2xl p-6">
+          <div className="flex items-center justify-between gap-6">
+            <div className="flex items-center gap-4 min-w-0">
+              <div className="w-12 h-12 rounded-xl bg-[#5865F2]/20 border border-[#5865F2]/30 flex items-center justify-center flex-shrink-0">
+                <MessageSquare size={22} className="text-[#7289DA]" />
+              </div>
+              <div className="min-w-0">
+                <h2 className="text-base font-bold text-white">Join the Plaud Developer Discord</h2>
+                <p className="text-sm text-slate-400 mt-0.5">4,800+ developers · Ask questions, share builds, get early access</p>
+                <div className="flex items-center gap-1.5 mt-2.5 flex-wrap">
+                  {['#announcements', '#getting-started', '#showcase', '#bugs'].map(ch => (
+                    <span key={ch} className="text-[10px] font-mono text-[#7289DA] bg-[#5865F2]/15 border border-[#5865F2]/20 rounded px-1.5 py-0.5 leading-none">
+                      {ch}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <a
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#5865F2] hover:bg-[#4752C4] text-white text-sm font-semibold rounded-xl transition-colors flex-shrink-0"
+            >
+              Join Discord <ArrowUpRight size={14} />
+            </a>
+          </div>
+        </div>
+
+        {/* ── GitHub + other links ── */}
         <div className="grid grid-cols-2 gap-4">
-          {SOCIAL_LINKS.map(link => (
+          {SOCIAL_LINKS.filter(l => l.label !== 'Discord').map(link => (
             <a
               key={link.label}
               href={link.href}
@@ -173,7 +202,7 @@ export default function CommunityPage() {
                 <link.icon size={20} className="text-slate-300" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-semibold text-white group-hover:text-white">{link.label}</div>
+                <div className="text-sm font-semibold text-white">{link.label}</div>
                 <div className="text-xs text-slate-500">{link.sublabel}</div>
               </div>
               <ArrowUpRight size={16} className="text-slate-600 group-hover:text-slate-400 transition-colors flex-shrink-0" />

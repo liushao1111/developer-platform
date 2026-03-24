@@ -449,28 +449,6 @@ function SDKOverviewTab({ app }: { app: SDKApp }) {
         </div>
       </div>
 
-      <div>
-        <SectionTitle>App Info</SectionTitle>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white/5 rounded-xl p-4">
-            <div className="text-xs text-slate-500 mb-1">Platform</div>
-            <div className="text-sm font-medium text-slate-800 capitalize">{app.platform}</div>
-          </div>
-          <div className="bg-white/5 rounded-xl p-4">
-            <div className="text-xs text-slate-500 mb-1">Bundle ID</div>
-            <div className="text-sm font-mono font-medium text-white">{app.bundleId}</div>
-          </div>
-          <div className="bg-white/5 rounded-xl p-4">
-            <div className="text-xs text-slate-500 mb-1">Active Devices</div>
-            <div className="text-sm font-medium text-white">{app.activeDevices}</div>
-          </div>
-          <div className="bg-white/5 rounded-xl p-4">
-            <div className="text-xs text-slate-500 mb-1">API Calls Today</div>
-            <div className="text-sm font-medium text-white">{app.apiCallsToday.toLocaleString()}</div>
-          </div>
-        </div>
-      </div>
-
       <Modal isOpen={showRegenConfirm} onClose={() => setShowRegenConfirm(false)} title="Regenerate Secret Key">
         <div className="space-y-4">
           <div className="flex items-start gap-3 p-3 bg-red-500/10 border border-red-200 rounded-xl">
@@ -488,49 +466,6 @@ function SDKOverviewTab({ app }: { app: SDKApp }) {
   );
 }
 
-function SDKSettingsTab({ app }: { app: SDKApp }) {
-  const { updateApplication, addToast } = useStore();
-  const [platform, setPlatform] = useState(app.platform);
-  const [bundleId, setBundleId] = useState(app.bundleId);
-  const [useCase, setUseCase] = useState(app.useCase);
-
-  const handleSave = () => {
-    updateApplication(app.id, { platform, bundleId, useCase } as Partial<SDKApp>);
-    addToast({ message: 'Settings saved', type: 'success' });
-  };
-
-  return (
-    <div className="space-y-5 max-w-lg">
-      <div>
-        <label className="block text-sm font-medium text-slate-300 mb-2">Platform</label>
-        <div className="flex gap-3">
-          {(['ios', 'android', 'both'] as const).map(p => (
-            <button
-              key={p}
-              onClick={() => setPlatform(p)}
-              className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
-                platform === p ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white/5 text-slate-300 border-white/10 hover:border-indigo-500/40'
-              }`}
-            >
-              {p === 'ios' ? 'iOS' : p === 'android' ? 'Android' : 'Both'}
-            </button>
-          ))}
-        </div>
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-slate-300 mb-1">Bundle ID</label>
-        <input value={bundleId} onChange={e => setBundleId(e.target.value)} className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm font-mono text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30" />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-slate-300 mb-1">Use Case</label>
-        <textarea value={useCase} onChange={e => setUseCase(e.target.value)} rows={4} className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 resize-none" />
-      </div>
-      <button onClick={handleSave} className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm transition-colors">
-        Save Changes
-      </button>
-    </div>
-  );
-}
 
 function SDKDownloadTab({ app }: { app: SDKApp }) {
   const { addToast } = useStore();
@@ -1002,7 +937,6 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
 
   const sdkTabs = [
     { id: 'overview', label: 'Overview & Credentials' },
-    { id: 'settings', label: 'SDK Settings' },
     { id: 'download', label: 'SDK Download' },
     { id: 'devices', label: 'Device Management' },
     { id: 'logs', label: 'Usage & Logs' },
@@ -1055,7 +989,7 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
           ) : (
             <>
               {activeTab === 'overview' && <SDKOverviewTab app={app as SDKApp} />}
-              {activeTab === 'settings' && <SDKSettingsTab app={app as SDKApp} />}
+
               {activeTab === 'download' && <SDKDownloadTab app={app as SDKApp} />}
               {activeTab === 'devices' && <SDKDevicesTab app={app as SDKApp} />}
               {activeTab === 'logs' && <LogsTable />}

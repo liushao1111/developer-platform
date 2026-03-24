@@ -10,6 +10,8 @@ import {
   Users2,
   TrendingUp,
   Clock,
+  MessageSquare,
+  ArrowUpRight,
 } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { MetricCard } from '@/components/console/MetricCard';
@@ -205,6 +207,35 @@ export default function DashboardPage() {
               </div>
             </div>
           )}
+        </div>
+
+        {/* ── Community callout ── */}
+        <div className="flex items-center justify-between gap-4 p-4 bg-[#161b22] border border-white/10 rounded-2xl">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#5865F2]/15 border border-[#5865F2]/20 flex items-center justify-center flex-shrink-0">
+              <MessageSquare size={16} className="text-[#7289DA]" />
+            </div>
+            <div>
+              <div className="text-sm font-semibold text-white">Join 4,800+ developers on Discord</div>
+              <div className="text-xs text-slate-500 mt-0.5">Ask questions, share builds, and get early access to new features</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={() => router.push('/console/community')}
+              className="px-3 py-1.5 text-xs font-medium text-slate-400 border border-white/10 rounded-lg hover:bg-white/5 hover:text-white transition-colors"
+            >
+              View community
+            </button>
+            <a
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-[#5865F2] hover:bg-[#4752C4] text-white rounded-lg transition-colors"
+            >
+              Join Discord <ArrowUpRight size={11} />
+            </a>
+          </div>
         </div>
 
       </div>

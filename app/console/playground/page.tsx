@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 import { Play, ChevronDown, ChevronRight, Clock, CheckCircle, XCircle, Copy, Check } from 'lucide-react';
+import { SDKSimulator } from '@/components/console/SDKSimulator';
+
+type PlaygroundTab = 'api' | 'sdk';
 
 // ── Endpoint definitions ───────────────────────────────────────────────────────
 
@@ -310,6 +313,7 @@ function CopyButton({ text }: { text: string }) {
 // ── Main page ──────────────────────────────────────────────────────────────────
 
 export default function PlaygroundPage() {
+  const [tab, setTab] = useState<PlaygroundTab>('api');
   const [selectedId, setSelectedId] = useState(ENDPOINTS[0].id);
   const [paramValues, setParamValues] = useState<Record<string, string>>({});
   const [isRunning, setIsRunning] = useState(false);
@@ -359,18 +363,28 @@ export default function PlaygroundPage() {
       {/* Top bar */}
       <div className="px-8 py-5 border-b border-white/10 flex items-center justify-between flex-shrink-0">
         <div>
-          <h1 className="text-xl font-semibold text-white">API Playground</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Explore and test Plaud API endpoints with live mock responses</p>
+          <h1 className="text-xl font-semibold text-white">Playground</h1>
+          <p className="text-sm text-slate-500 mt-0.5">Test the Plaud API and explore the native SDK flow</p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-600">Base URL</span>
-          <code className="text-xs font-mono bg-white/5 border border-white/10 rounded px-2 py-1 text-slate-400">
-            api.plaud.ai/v1
-          </code>
+        <div className="flex items-center gap-1 bg-white/5 rounded-xl p-1">
+          <button
+            onClick={() => setTab('api')}
+            className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-colors ${tab === 'api' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+          >
+            REST API
+          </button>
+          <button
+            onClick={() => setTab('sdk')}
+            className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-colors ${tab === 'sdk' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+          >
+            SDK Simulator
+          </button>
         </div>
       </div>
 
-      <div className="flex flex-1 overflow-hidden">
+      {tab === 'sdk' && <SDKSimulator />}
+
+      <div className={`flex flex-1 overflow-hidden ${tab === 'sdk' ? 'hidden' : ''}`}>
         {/* Sidebar — endpoint list */}
         <div className="w-60 border-r border-white/10 flex-shrink-0 overflow-y-auto py-3">
           {Object.entries(groups).map(([group, eps]) => (
